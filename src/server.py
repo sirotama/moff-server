@@ -1,4 +1,5 @@
 import requests
+import json
 import linecache
 from bottle import route, run, template
 
@@ -18,10 +19,11 @@ def nosn():
 	return "<b>invalid screen-name</b>"
 @route('/invite/<screenname>')
 def login(screenname):
-	headers = {'Cookie' : cookie , 'userId' : screenname}
-	text = {'text' : 'test'}
-	talk = requests.get('https://himasaku.misskey.xyz/talks/messages/say',headers=headers,data=text)
-
-	return template("sent talk to {{sn}} {{c}}", sn=screenname,  c = cookie)
+	headers = {'Cookie' : cookie}
+	sn = {'screen-name': screenname}
+	user = requests.post('https://himasaku.misskey.xyz/users/show',headers=cookie,data=sn)
+	userJson = json.loads(user)
+	userId = userJson['id']
+	return userId
 
 run(host='localhost', port=8080, debug=True, reloader=True)
