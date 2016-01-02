@@ -20,8 +20,15 @@ def nosn():
 @route('/invite/<screenname>')
 def login(screenname):
 	headers = {'Cookie' : cookie}
+	userId = getuserId(screenname)
+	sn = {'user-id': userId}
+	user = requests.post('https://himasaku.misskey.xyz/talks/messages/say' ,headers=headers,data=sn)
+	return user.text # debug
+
+def getuserId(screenname):
+	headers = {'Cookie' : cookie}
 	sn = {'screen-name': screenname}
-	user = requests.post( 'https://himasaku.misskey.xyz/users/show' ,headers=headers,data=sn)
+	user = requests.post('https://himasaku.misskey.xyz/users/show' ,headers=headers,data=sn)
 	userId = json.loads(user.text)
 	return userId['id']
 
