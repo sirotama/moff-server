@@ -21,8 +21,8 @@ def nosn():
 def login(screenname):
 	headers = {'Cookie' : cookie}
 	sn = {'screen-name': screenname}
-	userId = json.loads(requests.post('https://himasaku.misskey.xyz/users/show',headers=headers,data=sn)['id'])
-	return userId
-
+	user = requests.post( 'https://himasaku.misskey.xyz/users/show' ,headers=headers,data=sn)
+	userId = json.loads(user.text)
+	return userId['id']
 
 run(host='localhost', port=8080, debug=True, reloader=True)
