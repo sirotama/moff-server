@@ -16,12 +16,12 @@ def index():
 @route('/invite')
 def nosn():
 
-	return "<b>invalid screen-name</b>"
+	return '<b>invalid screen-name</b>'
 @route('/invite/<screenname>')
 def login(screenname):
 	headers = {'Cookie' : cookie}
 	sn = {'screen-name': screenname}
-	userId = json.loads(requests.post('https://himasaku.misskey.xyz/users/show',headers=cookie,data=sn)['id'])
-	return userId
+	userId = requests.post('https://himasaku.misskey.xyz/users/show',headers=headers,data=json.dumps(sn))[id]
+	return userId['id']
 
 run(host='localhost', port=8080, debug=True, reloader=True)
