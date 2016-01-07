@@ -3,11 +3,11 @@ import json
 import linecache
 from bottle import route, run, template
 
-ids = linecache.getline('id',0)
-password = linecache.getline('id',1)
+ids = linecache.getline('id',1).rstrip()
+password = linecache.getline('id',2).rstrip()
 
-login = requests.get('https://login.misskey.xyz?screen-name=' + ids + '&password=' + password)
-cookie = 'hmsk=' + login.cookies['hmsk'] 
+login = requests.post('https://login.misskey.xyz' ,data={'screen-name': ids, 'password': password})
+cookie = {'hmsk': login.cookies['hmsk']}
 
 @route('/')
 def index():
@@ -19,16 +19,14 @@ def nosn():
 	return '<b>invalid screen-name</b>'
 @route('/invite/<screenname>')
 def login(screenname):
-	headers = {'Cookie' : cookie}
 	userId = getuserId(screenname)
-	sn = {'user-id': userId}
-	user = requests.post('https://himasaku.misskey.xyz/talks/messages/say' ,headers=headers,data=sn)
+	sn = {'user-id': userId, 'text':'test from python'}
+	user = requests.post('https://himasaku.misskey.xyz/talks/messages/say' ,cookies=cookie,data=sn)
 	return user.text # debug
 
 def getuserId(screenname):
-	headers = {'Cookie' : cookie}
 	sn = {'screen-name': screenname}
-	user = requests.post('https://himasaku.misskey.xyz/users/show' ,headers=headers,data=sn)
+	user = requests.post('https://himasaku.misskey.xyz/users/show' ,cookies=cookie,data=sn)
 	userId = json.loads(user.text)
 	return userId['id']
 
